@@ -2,35 +2,60 @@ const taskInput = document.getElementById('taskInput')
 const addTaskButton = document.getElementById('addTask')
 const taskList = document.getElementById('taskList')
 
+// Adicionar ouvinte de evento de teclado ao campo de entrada de texto
+taskInput.addEventListener('keydown', function (event) {
+  // Verificar se a tecla pressionada é "Enter" (código 13)
+  if (event.keyCode === 13) {
+    // Chamar a função addTask quando a tecla "Enter" for pressionada
+    addTask()
+  }
+})
+
 // que chama a função "addTask" quando o botão é clicado
 addTaskButton.addEventListener('click', addTask)
+
+// Função para verificar se uma tarefa já está na lista
+function isTaskInList(taskText) {
+  const tasks = taskList.querySelectorAll('li span')
+  for (const task of tasks) {
+    if (task.textContent === taskText) {
+      return true // Tarefa já está na lista
+    }
+  }
+  return false // Tarefa não está na lista
+}
 
 // Função para adicionar uma nova tarefa à lista
 function addTask() {
   // Capturando o texto da tarefa a partir do valor do campo de entrada, removendo espaços em branco extras
   const taskText = taskInput.value.trim()
 
-  // Verificando se o texto da tarefa não está vazio
+  // Verificando se o texto da tarefa não está vazio e se já não existe na lista
   if (taskText !== '') {
-    // Criando um novo item de tarefa como um elemento "li"
-    const taskItem = document.createElement('li')
+    if (isTaskInList(taskText)) {
+      // Exibir mensagem de item já cadastrado
+      alert('Item já cadastrado na lista.')
+    } else {
+      // Criando um novo item de tarefa como um elemento "li"
+      const taskItem = document.createElement('li')
 
-    // Preenchendo o item de tarefa com HTML, incluindo o texto da tarefa e os botões "Concluir" e "Remover"
-    taskItem.innerHTML = `
-      <span>${taskText}</span>
-      <div class="button-container">
-        <button class="completeButton">Concluir</button>
-        <button class="removeButton">Remover</button>
-      </div>
-    `
-    // Adicionando o item de tarefa à lista de tarefas
-    taskList.appendChild(taskItem)
+      // Preenchendo o item de tarefa com HTML, incluindo o texto da tarefa e os botões "Concluir" e "Remover"
+      taskItem.innerHTML = `
+        <span>${taskText}</span>
+        <div class="button-container">
+          <button class="completeButton">Concluir</button>
+          <button class="removeButton">Remover</button>
+        </div>
+      `
+      // Adicionando o item de tarefa à lista de tarefas
+      taskList.appendChild(taskItem)
 
-    // Limpando o campo de entrada
-    taskInput.value = ''
+      // Limpando o campo de entrada
+      taskInput.value = ''
 
-    // Vinculando eventos de clique aos botões dentro do item de tarefa
-    bindTaskEvents(taskItem)
+      // Vinculando eventos de clique aos botões dentro do item de tarefa
+      bindTaskEvents(taskItem)
+    }
   }
 }
 
