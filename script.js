@@ -2,6 +2,9 @@ const taskInput = document.getElementById('taskInput')
 const addTaskButton = document.getElementById('addTask')
 const taskList = document.getElementById('taskList')
 
+// Carregar os itens da lista do Local Storage ao carregar a página
+window.addEventListener('load', loadTasks)
+
 // Adicionar ouvinte de evento de teclado ao campo de entrada de texto
 taskInput.addEventListener('keydown', function (event) {
   // Verificar se a tecla pressionada é "Enter" (código 13)
@@ -55,6 +58,9 @@ function addTask() {
 
       // Vinculando eventos de clique aos botões dentro do item de tarefa
       bindTaskEvents(taskItem)
+
+      // Salvar os itens da lista no Local Storage
+      saveTasks()
     }
   }
 }
@@ -86,6 +92,9 @@ function completeTask(event) {
   if (taskText) {
     taskText.classList.toggle('completed') // Adicionar/Remover classe no <span>
   }
+
+  // Salvar os itens da lista no Local Storage
+  saveTasks()
 }
 
 // Função para remover uma tarefa da lista
@@ -96,11 +105,27 @@ function removeTask(event) {
   if (taskItem && taskItem.parentElement === taskList) {
     // Removendo o item de tarefa da lista de tarefas, apenas se estiver contido na lista
     taskList.removeChild(taskItem)
+
+    // Salvar os itens da lista no Local Storage
+    saveTasks()
   }
 }
 
-// Adicionando ouvintes de evento de clique aos itens de tarefa existentes
-// para vincular eventos aos botões dentro deles
-taskList.querySelectorAll('li').forEach(taskItem => {
-  bindTaskEvents(taskItem)
-})
+// Função para carregar os itens da lista do Local Storage
+function loadTasks() {
+  const savedTasks = localStorage.getItem('tasks')
+  if (savedTasks) {
+    taskList.innerHTML = savedTasks
+    taskList.querySelectorAll('li').forEach(taskItem => {
+      bindTaskEvents(taskItem)
+    })
+  }
+}
+
+// Função para salvar os itens da lista no Local Storage
+function saveTasks() {
+  localStorage.setItem('tasks', taskList.innerHTML)
+}
+
+// Carregar os itens da lista do Local Storage ao carregar a página
+loadTasks()
